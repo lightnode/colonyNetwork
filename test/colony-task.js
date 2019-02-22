@@ -63,7 +63,7 @@ const IMetaColony = artifacts.require("IMetaColony");
 const IColonyNetwork = artifacts.require("IColonyNetwork");
 const DSToken = artifacts.require("DSToken");
 
-contract("ColonyTask", accounts => {
+contract.only("ColonyTask", accounts => {
   const MANAGER = accounts[0];
   const EVALUATOR = MANAGER;
   const WORKER = accounts[2];
@@ -85,6 +85,7 @@ contract("ColonyTask", accounts => {
     ({ colony, token } = await setupRandomColony(colonyNetwork));
     await colony.setRewardInverse(100);
     await colony.setAdminRole(COLONY_ADMIN);
+    await colony.setAdministrationRole(MANAGER, 1);
 
     const otherTokenArgs = getTokenArgs();
     otherToken = await DSToken.new(otherTokenArgs[1]);
@@ -104,7 +105,7 @@ contract("ColonyTask", accounts => {
 
     it("should fail if a non-admin user tries to make a task", async () => {
       const taskCountBefore = await colony.getTaskCount();
-      await checkErrorRevert(colony.makeTask(SPECIFICATION_HASH, 1, 1, 0, { from: OTHER }), "ds-auth-unauthorized");
+      await checkErrorRevert(colony.makeTask(1, 0, SPECIFICATION_HASH, 1, 1, 0, { from: OTHER }), "ds-auth-unauthorized");
       const taskCountAfter = await colony.getTaskCount();
       expect(taskCountBefore).to.be.eq.BN(taskCountAfter);
     });
@@ -172,7 +173,7 @@ contract("ColonyTask", accounts => {
     });
 
     it("should log TaskAdded and FundingPotAdded events", async () => {
-      await expectAllEvents(colony.makeTask(SPECIFICATION_HASH, 1, 1, 0), ["TaskAdded", "FundingPotAdded"]);
+      await expectAllEvents(colony.makeTask(1, 0, SPECIFICATION_HASH, 1, 1, 0), ["TaskAdded", "FundingPotAdded"]);
     });
 
     it("should optionally set the skill and due date", async () => {
