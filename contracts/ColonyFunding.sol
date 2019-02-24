@@ -166,10 +166,9 @@ contract ColonyFunding is ColonyStorage, PatriciaTreeProofs {
 
     if (fromPotAssociatedType == FundingPotAssociatedType.Task) {
       uint fromTaskId = fundingPots[_fromPot].associatedTypeId;
-      Task storage task = tasks[fromTaskId];
       uint totalPayout = getTotalTaskPayout(fromTaskId, _token);
       uint surplus = (fromPotPreviousAmount > totalPayout) ? sub(fromPotPreviousAmount, totalPayout) : 0;
-      require(task.status == TaskStatus.Cancelled || surplus >= _amount, "colony-funding-task-bad-state");
+      require(tasks[fromTaskId].status == TaskStatus.Cancelled || surplus >= _amount, "colony-funding-task-bad-state");
 
       updateTaskPayoutsWeCannotMakeAfterPotChange(fromTaskId, _token, fromPotPreviousAmount);
     }
@@ -210,7 +209,7 @@ contract ColonyFunding is ColonyStorage, PatriciaTreeProofs {
   }
 
   function startNextRewardPayout(address _token, bytes memory key, bytes memory value, uint256 branchMask, bytes32[] memory siblings)
-  public auth stoppable
+  public stoppable auth
   {
     ITokenLocking tokenLocking = ITokenLocking(IColonyNetwork(colonyNetworkAddress).getTokenLocking());
     uint256 totalLockCount = tokenLocking.lockToken(token);
