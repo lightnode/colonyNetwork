@@ -166,7 +166,7 @@ contract("ColonyTask", accounts => {
     });
 
     it("should set the task domain correctly", async () => {
-      await colony.addDomain(1);
+      await colony.addDomain(1, 0, 1);
       const taskId = await makeTask({ colony, domainId: 2 });
       const task = await colony.getTask(taskId);
       expect(task[7]).to.eq.BN(2);
@@ -1131,7 +1131,7 @@ contract("ColonyTask", accounts => {
 
     it("should log a TaskDomainSet event, if the task domain gets changed", async () => {
       const taskId = await makeTask({ colony });
-      await colony.addDomain(1);
+      await colony.addDomain(1, 0, 1);
       await expectEvent(
         executeSignedTaskChange({
           colony,
