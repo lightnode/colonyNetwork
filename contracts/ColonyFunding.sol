@@ -148,8 +148,8 @@ contract ColonyFunding is ColonyStorage, PatriciaTreeProofs {
   )
   public
   stoppable
-  auth2(_parentDomainId, getDomainFromFundingPot(_fromPot), _fromDomainProofIndex)
-  auth2(_parentDomainId, getDomainFromFundingPot(_toPot), _toDomainProofIndex)
+  authDomain(_parentDomainId, getDomainFromFundingPot(_fromPot), _fromDomainProofIndex)
+  authDomain(_parentDomainId, getDomainFromFundingPot(_toPot), _toDomainProofIndex)
   {
     // Prevent moving funds from between the same pot, which otherwise would cause the pot balance to
     // increment by _amount.
