@@ -126,7 +126,7 @@ contract ColonyStorage is CommonStorage, ColonyDataTypes, DSMath {
   }
 
   modifier isAdmin(address _user) {
-    require(ColonyAuthority(address(authority)).hasUserRole(_user, uint8(ColonyRole.Admin)), "colony-not-admin");
+    require(ColonyAuthority(address(authority)).hasUserRole(_user, uint8(ColonyRole.Administration)), "colony-not-admin");
     _;
   }
 
