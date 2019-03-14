@@ -132,7 +132,7 @@ contract ReputationMiningCycle is ReputationMiningCycleStorage, PatriciaTreeProo
     reputationMiningWindowOpenTimestamp = now;
   }
 
-  function submitRootHash(bytes32 newHash, uint256 nNodes, bytes32 jrh, uint256 entryIndex) public
+  function submitRootHash(bytes32 newHash, uint256 nNodes, bytes32 jrh, uint256 entryIndex) external
   submissionPossible()
   entryQualifies(newHash, nNodes, jrh, entryIndex)
   withinTarget(newHash, entryIndex)
@@ -192,7 +192,7 @@ contract ReputationMiningCycle is ReputationMiningCycleStorage, PatriciaTreeProo
     submittedEntries[newHash][msg.sender][jrh][entryIndex] = true;
   }
 
-  function confirmNewHash(uint256 roundNumber) public
+  function confirmNewHash(uint256 roundNumber) external
   finalDisputeRoundCompleted(roundNumber)
   {
     require(submissionWindowClosed(), "colony-reputation-mining-submission-window-still-open");
@@ -207,7 +207,7 @@ contract ReputationMiningCycle is ReputationMiningCycleStorage, PatriciaTreeProo
     selfdestruct(colonyNetworkAddress);
   }
 
-  function invalidateHash(uint256 round, uint256 idx) public {
+  function invalidateHash(uint256 round, uint256 idx) external {
     // What we do depends on our opponent, so work out which index it was at in disputeRounds[round]
     uint256 opponentIdx = (idx % 2 == 1 ? idx-1 : idx + 1);
     uint256 nInNextRound;
@@ -363,10 +363,10 @@ contract ReputationMiningCycle is ReputationMiningCycleStorage, PatriciaTreeProo
     uint256 round,
     uint256 index,
     uint256 branchMask1,
-    bytes32[] memory siblings1,
+    bytes32[] calldata siblings1,
     uint256 branchMask2,
-    bytes32[] memory siblings2
-  ) public
+    bytes32[] calldata siblings2
+  ) external
   {
     // Require we've not submitted already.
     require(disputeRounds[round][index].jrhNNodes == 0, "colony-reputation-jrh-hash-already-verified");

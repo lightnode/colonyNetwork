@@ -50,18 +50,18 @@ contract IReputationMiningCycle is ReputationMiningCycleDataTypes {
   /// @param nNodes Number of nodes in tree with root `newHash`
   /// @param jrh The justifcation root hash for this submission
   /// @param entryIndex The entry number for the given `newHash` and `nNodes`
-  function submitRootHash(bytes32 newHash, uint256 nNodes, bytes32 jrh, uint256 entryIndex) public;
+  function submitRootHash(bytes32 newHash, uint256 nNodes, bytes32 jrh, uint256 entryIndex) external;
 
   /// @notice Confirm a new reputation hash. The hash in question is either the only one that was submitted this cycle,
   /// or the last one standing after all others have been proved wrong.
   /// @param roundNumber The round number that the hash being confirmed is in as the only contendender. If only one hash was submitted, then this is zero.
-  function confirmNewHash(uint256 roundNumber) public;
+  function confirmNewHash(uint256 roundNumber) external;
 
   /// @notice Invalidate a hash that has timed out relative to its opponent its current challenge step. Note that this can be called to 'invalidate'
   /// a nonexistent hash, if the round has an odd number of entrants and so the last hash is being given a bye to the next round.
   /// @param round The round number the hash being invalidated is in
   /// @param idx The index in the round that the hash being invalidated is in
-  function invalidateHash(uint256 round, uint256 idx) public;
+  function invalidateHash(uint256 round, uint256 idx) external;
 
   /// @notice Respond to a binary search step, to eventually discover where two submitted hashes differ in their Justification trees.
   /// @param round The round number the hash we are responding on behalf of is in
@@ -166,9 +166,9 @@ contract IReputationMiningCycle is ReputationMiningCycleDataTypes {
     uint256 round,
     uint256 index,
     uint branchMask1,
-    bytes32[] memory siblings1,
+    bytes32[] calldata siblings1,
     uint branchMask2,
-    bytes32[] memory siblings2) public;
+    bytes32[] calldata siblings2) external;
 
   /// @notice Add a new entry to the reputation update log
   /// @param _user The address of the user having their reputation changed by this log entry
