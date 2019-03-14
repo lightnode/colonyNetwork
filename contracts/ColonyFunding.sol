@@ -390,11 +390,9 @@ contract ColonyFunding is ColonyStorage, PatriciaTreeProofs {
     uint currentBalance = fundingPots[task.fundingPotId].balance[_token];
     uint newBalance = add(currentBalance, _amount);
 
-    if (currentBalance >= totalTokenPayout) {         // If the old amount in the pot was enough to pay for the budget
-      if (newBalance < totalTokenPayout) {            // And the new amount in the pot is not enough to pay for the budget...
-        task.payoutsWeCannotMake += 1;                // Then this is a set of payouts we cannot make that we could before.
-      }
-    } else {                                          // If this 'else' is running, then the old amount in the pot could not pay for the budget
+    // It is not possible to defund a pot below the budget, so we don't check for that here.
+
+    if (currentBalance < totalTokenPayout) {          // If the old amount in the pot was not enough to pay for the budget
       if (newBalance >= totalTokenPayout) {           // And the new amount in the pot can pay for the budget
         task.payoutsWeCannotMake -= 1;                // Then this is a set of payouts we can make that we could not before.
       }
@@ -405,6 +403,7 @@ contract ColonyFunding is ColonyStorage, PatriciaTreeProofs {
     Task storage task = tasks[_id];
     uint totalTokenPayout = getTotalTaskPayout(_id, _token);
     uint tokenPot = fundingPots[task.fundingPotId].balance[_token];
+
     if (tokenPot >= _prev) {                                          // If the amount in the pot was enough to pay for the old budget...
       if (tokenPot < totalTokenPayout) {                              // And the amount is not enough to pay for the new budget...
         task.payoutsWeCannotMake += 1;                                // Then this is a set of payouts we cannot make that we could before.

@@ -126,7 +126,7 @@ contract ColonyStorage is CommonStorage, ColonyDataTypes, DSMath {
   }
 
   modifier isAdmin(uint256 _parentDomainId, uint256 _childIndex, uint256 _id, address _user) {
-    require(ColonyAuthority(authority).hasUserRole(_user, _parentDomainId, uint8(ColonyRole.Administration)), "colony-not-admin");
+    require(ColonyAuthority(address(authority)).hasUserRole(_user, _parentDomainId, uint8(ColonyRole.Administration)), "colony-not-admin");
     require(isValidDomainProof(_parentDomainId, tasks[_id].domainId, _childIndex), "colony-invalid-domain-proof");
     _;
   }
@@ -160,19 +160,11 @@ contract ColonyStorage is CommonStorage, ColonyDataTypes, DSMath {
   }
 
   function canCallBecauseArchitect(address src, uint256 domainId, bytes4 sig) internal view returns (bool) {
-    return ColonyRoles(authority).canCallBecause(src, domainId, uint8(ColonyRole.ArchitectureSubdomain), address(this), sig);
+    return ColonyRoles(address(authority)).canCallBecause(src, domainId, uint8(ColonyRole.ArchitectureSubdomain), address(this), sig);
   }
 
   function isAuthorized(address src, uint256 domainId, bytes4 sig) internal view returns (bool) {
-    if (src == address(this)) {
-      return true;
-    } else if (src == owner) {
-      return true;
-    } else if (authority == DSAuthority(0)) {
-      return false;
-    } else {
-      return ColonyRoles(authority).canCall(src, domainId, address(this), sig);
-    }
+    return (src == owner) || ColonyRoles(address(authority)).canCall(src, domainId, address(this), sig);
   }
 
   function isAuthorized(address src, bytes4 sig) internal view returns (bool) {
