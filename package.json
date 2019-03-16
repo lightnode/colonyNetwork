@@ -65,7 +65,7 @@
     "bn-chai": "^1.0.1",
     "bn.js": "^4.11.8",
     "chai": "^4.2.0",
-    "eslint": "^5.14.0",
+    "eslint": "^5.15.2",
     "eslint-config-airbnb-base": "^13.0.0",
     "eslint-config-prettier": "^4.0.0",
     "eslint-import-resolver-jest": "^2.1.1",
