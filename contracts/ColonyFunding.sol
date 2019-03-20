@@ -138,9 +138,9 @@ contract ColonyFunding is ColonyStorage, PatriciaTreeProofs {
   }
 
   function moveFundsBetweenPots(
-    uint256 _parentDomainId,
-    uint256 _fromDomainProofIndex,
-    uint256 _toDomainProofIndex,
+    uint256 _permissionDomainId,
+    uint256 _fromChildSkillIndex,
+    uint256 _toChildSkillIndex,
     uint256 _fromPot,
     uint256 _toPot,
     uint256 _amount,
@@ -148,8 +148,8 @@ contract ColonyFunding is ColonyStorage, PatriciaTreeProofs {
   )
   public
   stoppable
-  authDomain(_parentDomainId, getDomainFromFundingPot(_fromPot), _fromDomainProofIndex)
-  authDomain(_parentDomainId, getDomainFromFundingPot(_toPot), _toDomainProofIndex)
+  authDomain(_permissionDomainId, _fromChildSkillIndex, getDomainFromFundingPot(_fromPot))
+  authDomain(_permissionDomainId, _toChildSkillIndex, getDomainFromFundingPot(_toPot))
   {
     // Prevent moving funds from between the same pot, which otherwise would cause the pot balance to
     // increment by _amount.
