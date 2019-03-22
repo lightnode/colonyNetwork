@@ -136,13 +136,8 @@ contract ColonyStorage is CommonStorage, ColonyDataTypes, DSMath {
     _;
   }
 
-  modifier auth {
-    require(isAuthorized(msg.sender, 1, msg.sig), "ds-auth-unauthorized");
-    _;
-  }
-
   modifier authDomain(uint256 _permissionDomainId, uint256 _childSkillIndex, uint256 _childDomainId) {
-    require(isAuthorized(msg.sender, _permissionDomainId, msg.sig), "ds-auth-unauthorized");
+    require(isAuthorized(msg.sender, _permissionDomainId, msg.sig), "ds-auth-domain-unauthorized");
     require(validateDomainProof(_permissionDomainId, _childSkillIndex, _childDomainId), "ds-auth-invalid-domain-proof");
     if (canCallBecauseArchitect(msg.sender, _permissionDomainId, msg.sig)) {
       require(_permissionDomainId != _childDomainId, "ds-auth-only-authorized-in-child-domain");
@@ -163,7 +158,7 @@ contract ColonyStorage is CommonStorage, ColonyDataTypes, DSMath {
     return DomainRoles(address(authority)).canCallBecause(src, domainId, uint8(ColonyRole.ArchitectureSubdomain), address(this), sig);
   }
 
-  function isAuthorized(address src, uint256 domainId, bytes4 sig) internal view returns (bool) {
+  function isAuthorized(address src, uint256 domainId, bytes4 sig) private view returns (bool) {
     return (src == owner) || DomainRoles(address(authority)).canCall(src, domainId, address(this), sig);
   }
 

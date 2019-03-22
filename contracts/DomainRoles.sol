@@ -26,7 +26,10 @@ contract DomainRoles is DSRoles {
   // New function signatures taking arbitrary domains
 
   function getUserRoles(address who, uint256 where) public view returns (bytes32) {
-    return _user_roles[who][where];
+    bytes32 globalRoles = getUserRoles(who);
+    bytes32 domainRoles = _user_roles[who][where];
+    bytes32 result = globalRoles | domainRoles;
+    return result;
   }
 
   function setUserRole(address who, uint256 where, uint8 role, bool enabled) public auth {
@@ -58,19 +61,4 @@ contract DomainRoles is DSRoles {
     // See if the permission comes from a *specific* role
     return bytes32(0) == (needs_one_of & has_roles) ^ shifted;
   }
-
-  // Support old function signatures for root domain
-
-  function setUserRole(address who, uint8 role, bool enabled) public auth {
-    return setUserRole(who, 1, role, enabled);
-  }
-
-  function hasUserRole(address who, uint8 role) public view returns (bool) {
-    return hasUserRole(who, 1, role);
-  }
-
-  function canCall(address caller, address code, bytes4 sig) public view returns (bool) {
-    return canCall(caller, 1, code, sig);
-  }
-
 }

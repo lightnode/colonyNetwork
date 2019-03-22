@@ -104,7 +104,7 @@ contract("ColonyTask", accounts => {
 
     it("should fail if a non-admin user tries to make a task", async () => {
       const taskCountBefore = await colony.getTaskCount();
-      await checkErrorRevert(colony.makeTask(1, 0, SPECIFICATION_HASH, 1, 1, 0, { from: OTHER }), "ds-auth-unauthorized");
+      await checkErrorRevert(colony.makeTask(1, 0, SPECIFICATION_HASH, 1, 1, 0, { from: OTHER }), "ds-auth-domain-unauthorized");
       const taskCountAfter = await colony.getTaskCount();
       expect(taskCountBefore).to.be.eq.BN(taskCountAfter);
     });

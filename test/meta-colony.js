@@ -294,7 +294,7 @@ contract("Meta Colony", accounts => {
     });
 
     it("someone who does not have founder role should not be able to add domains", async () => {
-      await checkErrorRevert(colony.addDomain(1, 0, 1, { from: OTHER_ACCOUNT }), "ds-auth-unauthorized");
+      await checkErrorRevert(colony.addDomain(1, 0, 1, { from: OTHER_ACCOUNT }), "ds-auth-domain-unauthorized");
     });
 
     it("should be able to add new domains as children to the root domain", async () => {

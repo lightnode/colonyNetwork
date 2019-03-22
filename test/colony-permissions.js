@@ -80,7 +80,7 @@ contract("ColonyPermissions", accounts => {
 
       await checkErrorRevert(
         colony.moveFundsBetweenPots(1, 0, 0, domain1.fundingPotId, domain2.fundingPotId, WAD, token.address, { from: USER1 }),
-        "ds-auth-unauthorized"
+        "ds-auth-domain-unauthorized"
       );
 
       const taskId = await makeTask({ colony, domainId: 2 });
@@ -99,7 +99,7 @@ contract("ColonyPermissions", accounts => {
       hasRole = await colony.hasUserRole(USER1, 2, ADMINISTRATION_ROLE);
       expect(hasRole).to.be.true;
 
-      await checkErrorRevert(colony.makeTask(1, 0, SPECIFICATION_HASH, 1, 0, 0, { from: USER1 }), "ds-auth-unauthorized");
+      await checkErrorRevert(colony.makeTask(1, 0, SPECIFICATION_HASH, 1, 0, 0, { from: USER1 }), "ds-auth-domain-unauthorized");
 
       const { logs } = await colony.makeTask(2, 0, SPECIFICATION_HASH, 2, 0, 0, { from: USER1 });
       const { taskId } = logs.filter(log => log.event === "TaskAdded")[0].args;
@@ -160,7 +160,7 @@ contract("ColonyPermissions", accounts => {
       hasRole = await colony.hasUserRole(USER1, 2, ARCHITECTURE_ROLE);
       expect(hasRole).to.be.true;
 
-      await checkErrorRevert(colony.addDomain(1, 0, 1, { from: USER1 }), "ds-auth-unauthorized");
+      await checkErrorRevert(colony.addDomain(1, 0, 1, { from: USER1 }), "ds-auth-domain-unauthorized");
 
       // Note: cannot add subdomains currently, this is just checking that the auth passed.
       await checkErrorRevert(colony.addDomain(2, 0, 2, { from: USER1 }), "colony-parent-domain-not-root");
