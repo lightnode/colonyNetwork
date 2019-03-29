@@ -122,18 +122,13 @@ export async function assignRoles({ colony, taskId, manager, evaluator, worker }
   });
 }
 
-export async function setupTask(args) {
-  const taskId = await makeTask(args);
-  return taskId;
-}
-
 export async function setupAssignedTask({ colonyNetwork, colony, dueDate, domainId = 1, skillId, manager, evaluator, worker }) {
   const accounts = await web3GetAccounts();
   manager = manager || accounts[0]; // eslint-disable-line no-param-reassign
   evaluator = evaluator || manager; // eslint-disable-line no-param-reassign
   worker = worker || accounts[2]; // eslint-disable-line no-param-reassign
 
-  const taskId = await setupTask({ colonyNetwork, colony, dueDate, domainId, skillId, manager });
+  const taskId = await makeTask({ colonyNetwork, colony, dueDate, domainId, skillId, manager });
   await assignRoles({ colony, taskId, manager, evaluator, worker });
 
   return taskId;
@@ -164,7 +159,7 @@ export async function setupFundedTask({
     tokenAddress = token === ZERO_ADDRESS ? ZERO_ADDRESS : token.address;
   }
 
-  const taskId = await setupTask({ colonyNetwork, colony, dueDate, domainId, skillId, manager });
+  const taskId = await makeTask({ colonyNetwork, colony, dueDate, domainId, skillId, manager });
   const task = await colony.getTask(taskId);
   const { fundingPotId } = task;
   const managerPayoutBN = new BN(managerPayout);

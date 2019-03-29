@@ -1,5 +1,3 @@
-/* globals artifacts */
-
 import path from "path";
 import BN from "bn.js";
 import chai from "chai";
@@ -8,7 +6,12 @@ import bnChai from "bn-chai";
 import { TruffleLoader } from "@colony/colony-js-contract-loader-fs";
 
 import { DEFAULT_STAKE, INITIAL_FUNDING, ZERO_ADDRESS } from "../../helpers/constants";
-import { advanceMiningCycleNoContest, getActiveRepCycle, finishReputationMiningCycleAndWithdrawAllMinerStakes } from "../../helpers/test-helper";
+import {
+  advanceMiningCycleNoContest,
+  getActiveRepCycle,
+  finishReputationMiningCycleAndWithdrawAllMinerStakes,
+  removeSubdomainLimit
+} from "../../helpers/test-helper";
 import ReputationMinerTestWrapper from "../../packages/reputation-miner/test/ReputationMinerTestWrapper";
 
 import {
@@ -18,9 +21,6 @@ import {
   setupFinalizedTask,
   fundColonyWithTokens
 } from "../../helpers/test-data-generator";
-
-const NoLimitSubdomains = artifacts.require("NoLimitSubdomains");
-const Resolver = artifacts.require("Resolver");
 
 const useJsTree = true;
 
@@ -60,11 +60,7 @@ process.env.SOLIDITY_COVERAGE
         colonyNetwork = await setupColonyNetwork();
         ({ metaColony, clnyToken } = await setupMetaColonyWithLockedCLNYToken(colonyNetwork));
 
-        // Replace addDomain with the addDomain implementation with no restrictions on depth of subdomains
-        const noLimitSubdomains = await NoLimitSubdomains.new();
-        const resolverAddress = await colonyNetwork.getColonyVersionResolver(1);
-        const resolver = await Resolver.at(resolverAddress);
-        await resolver.register("addDomain(uint256)", noLimitSubdomains.address);
+        await removeSubdomainLimit(colonyNetwork); // Temporary for tests until we allow subdomain depth > 1
 
         // Initialise global skill: 3. Set up local skills tree 1 -> 4 -> 5
         //                                                       \-> 2

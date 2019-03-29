@@ -15,7 +15,8 @@ import {
   getActiveRepCycle,
   advanceMiningCycleNoContest,
   accommodateChallengeAndInvalidateHash,
-  finishReputationMiningCycleAndWithdrawAllMinerStakes
+  finishReputationMiningCycleAndWithdrawAllMinerStakes,
+  removeSubdomainLimit
 } from "../../helpers/test-helper";
 
 import {
@@ -37,8 +38,6 @@ const { expect } = chai;
 chai.use(bnChai(web3.utils.BN));
 
 const IReputationMiningCycle = artifacts.require("IReputationMiningCycle");
-const NoLimitSubdomains = artifacts.require("NoLimitSubdomains");
-const Resolver = artifacts.require("Resolver");
 
 const loader = new TruffleLoader({
   contractDir: path.resolve(__dirname, "..", "..", "build", "contracts")
@@ -62,11 +61,7 @@ contract("Reputation Mining - disputes resolution misbehaviour", accounts => {
     colonyNetwork = await setupColonyNetwork();
     ({ metaColony, clnyToken } = await setupMetaColonyWithLockedCLNYToken(colonyNetwork));
 
-    // Replace addDomain with the addDomain implementation with no restrictions on depth of subdomains
-    const noLimitSubdomains = await NoLimitSubdomains.new();
-    const resolverAddress = await colonyNetwork.getColonyVersionResolver(1);
-    const resolver = await Resolver.at(resolverAddress);
-    await resolver.register("addDomain(uint256)", noLimitSubdomains.address);
+    await removeSubdomainLimit(colonyNetwork); // Temporary for tests until we allow subdomain depth > 1
 
     // Initialise global skills tree: 3, local skills tree 1 -> 4 -> 5
     //                                                      \-> 2
