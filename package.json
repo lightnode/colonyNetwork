@@ -39,7 +39,8 @@
     "posttest:contracts:upgrade:ganache": "npm run clean:test:contracts | npm run stop:blockchain:client",
     "posttest:contracts:gasCosts": "npm run stop:blockchain:client",
     "posttest:contracts:patricia": "npm run stop:blockchain:client",
-    "posttest:contracts:watch": "npm run stop:blockchain:client"
+    "posttest:contracts:watch": "npm run stop:blockchain:client",
+    "posttest:contracts:security": "sed -ie \"s/docker: false/docker: true/g\" ./truffle.js && rimraf ./truffle.jse"
   },
   "husky": {
     "hooks": {
