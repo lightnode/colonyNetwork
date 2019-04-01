@@ -2,6 +2,7 @@
 
 import chai from "chai";
 import bnChai from "bn-chai";
+import BN from "bn.js";
 
 import { WAD, INITIAL_FUNDING, ZERO_ADDRESS } from "../../helpers/constants";
 import { checkErrorRevert } from "../../helpers/test-helper";
@@ -27,7 +28,7 @@ contract("One transaction payments", accounts => {
     await colonyNetwork.initialiseReputationMining();
     await colonyNetwork.startNextCycle();
 
-    globalSkillId = await colonyNetwork.getRootGlobalSkillId();
+    globalSkillId = new BN(3);
   });
 
   beforeEach(async () => {
@@ -109,7 +110,7 @@ contract("One transaction payments", accounts => {
 
     it("should not allow an admin to specify a non-global skill", async () => {
       await checkErrorRevert(
-        oneTxExtension.makePayment(1, 0, 1, 0, RECIPIENT, token.address, 10, 1, 3, { from: COLONY_ADMIN }),
+        oneTxExtension.makePayment(1, 0, 1, 0, RECIPIENT, token.address, 10, 1, 2, { from: COLONY_ADMIN }),
         "colony-not-global-skill"
       );
     });
