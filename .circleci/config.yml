@@ -112,7 +112,6 @@ jobs:
     <<: *job_common
     steps:
       - checkout
-      - <<: *step_restore_cache
       - setup_remote_docker
       - <<: *step_pull_solc_docker
       - <<: *step_setup_global_packages
