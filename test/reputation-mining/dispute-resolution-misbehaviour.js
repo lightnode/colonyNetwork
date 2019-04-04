@@ -65,8 +65,8 @@ contract("Reputation Mining - disputes resolution misbehaviour", accounts => {
 
     // Initialise global skills tree: 3, local skills tree 1 -> 4 -> 5
     //                                                      \-> 2
-    await metaColony.addDomain(1);
-    await metaColony.addDomain(2);
+    await metaColony.addDomain(1, 0, 1);
+    await metaColony.addDomain(1, 1, 2);
 
     await giveUserCLNYTokensAndStake(colonyNetwork, MINER1, DEFAULT_STAKE);
     await colonyNetwork.initialiseReputationMining();
